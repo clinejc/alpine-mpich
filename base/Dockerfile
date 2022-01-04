@@ -93,12 +93,30 @@ RUN mv /tmp/repast-hpc-src/repast.hpc-netcdf-cxx4-install/build/src/zombies/bin/
 
 #### CLEAN UP Repast HPC ####
 WORKDIR /
-RUN rm -rf /tmp/tmp/repast-hpc-src
+RUN rm -rf /tmp/repast-hpc-src
+
+
+#### Download, build, and install chiSIM
+RUN mkdir /tmp/chiSIM-src/
+WORKDIR /tmp/chiSIM-src
+RUN wget https://github.com/clinejc/chiSIM/archive/refs/heads/develop.zip -O chiSIM-develop.zip \
+  && unzip chiSIM-develop.zip \
+  && cd chiSIM-develop \
+  && mkdir build  \
+  && cd build \
+  && cmake  -DCMAKE_INSTALL_PREFIX=/usr/local -DNETCDF_CXX_ROOT=/usr/local .. \
+  && make \
+  && make install
+
+
+#### CLEAN UP chiSIM ####
+WORKDIR /
+RUN rm -rf /tmp/chiSIM
 
 
 #### CLEAN UP ####
-#WORKDIR /
-#RUN rm -rf /tmp/*
+WORKDIR /
+RUN rm -rf /tmp/*
 
 
 #### ADD DEFAULT USER ####
